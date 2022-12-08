@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css.css" />
+  </head>
+
+  <body>
+    <div id="espaco">
+      <div id="contentor1">
+        <div id="t1">
+          <div><i></i></div>
+          <div><i></i></div>
+          <div><i></i></div>
+          <div
+            style="
+              border-bottom-left-radius: 20px;
+              border-bottom-right-radius: 20px;
+            "
+          >
+            <i></i>
+          </div>
+        </div>
+        <div id="t2">
+          <div><i class="a1"></i></div>
+          <div><i class="a2"></i></div>
+          <div><i class="a4"></i></div>
+          <div
+            style="
+              border-bottom-left-radius: 20px;
+              border-bottom-right-radius: 20px;
+            "
+          >
+            <i class="a4"></i>
+          </div>
+        </div>
+        <div id="t3">
+          <div><i class="b1"></i></div>
+          <div><i class="b2"></i></div>
+          <div><i class="b3"></i></div>
+          <div
+            style="
+              border-bottom-left-radius: 20px;
+              border-bottom-right-radius: 20px;
+            "
+          >
+            <i class="b4"></i>
+          </div>
+        </div>
+        <div id="t4">
+          <div><i class="c1"></i></div>
+          <div><i class="c2"></i></div>
+          <div><i class="c3"></i></div>
+          <div
+            style="
+              border-bottom-left-radius: 20px;
+              border-bottom-right-radius: 20px;
+            "
+          >
+            <i class="c4"></i>
+          </div>
+        </div>
+        <div id="t5">
+          <div><i class="d1"></i></div>
+          <div><i class="d2"></i></div>
+          <div><i class="d3"></i></div>
+          <div
+            style="
+              border-bottom-left-radius: 20px;
+              border-bottom-right-radius: 20px;
+            "
+          >
+            <i class="d4"></i>
+          </div>
+        </div>
+      </div>
+      <div id="Solucoes"></div>
+    </div>
+
+
+    <script>
+      let tambor1 = document.querySelectorAll("#t1 > div >i");
+      let tambor2 = document.querySelectorAll("#t2 > div >i");
+      let tambor3 = document.querySelectorAll("#t3 > div >i");
+      let tambor4 = document.querySelectorAll("#t4 > div >i");
+      let tambor5 = document.querySelectorAll("#t5 > div >i");
+      var copia = null;
+
+      let dv;
+
+      let tambores = [tambor1, tambor2, tambor3, tambor4, tambor5];
+
+      var estadoInicial = [
+        ["A", "P", "V", "", ""],
+        ["A", "P", "V", "", ""],
+        ["A", "P", "V", "", ""],
+        ["A", "P", "V", "", ""],
+      ];
+
+      // atribuir cores inicias
+
+      for (let i = 0; i < 4; i++) {
+        for (let y = 0; y < 5; y++) {
+          tambores[y][i].innerHTML = estadoInicial[i][y];
+          if (estadoInicial[i][y] == "A") {
+            tambores[y][i].style.background = "blue";
+            tambores[y][i].style.color = "blue";
+          } else if (estadoInicial[i][y] == "P") {
+            tambores[y][i].style.background = "black";
+            tambores[y][i].style.color = "black";
+          } else if (estadoInicial[i][y] == "V") {
+            tambores[y][i].style.background = "red";
+            tambores[y][i].style.color = "red";
+          }
+        }
+      }
+
+    
+
+      function topo(array) {
+        for (let i = 0; i < array.length; i++) {
+          if (array[i].textContent != "") {
+            return i;
+          }
+        }
+
+        return 3;
+      }
+  //movimentar
+      function movimentarPeca(div, coluna = 0) {
+        if (copia == null) {
+          copia = div[topo(div)];
+          div[topo(div)].parentNode.innerHTML = "<i class='bg'></>";
+        } else {
+          if (div[topo(div)].textContent == "") {
+            div[topo(div)].parentNode.innerHTML = copia.outerHTML;
+            copia = null;
+          } else {
+            if (topo(div) < 4) {
+              div[topo(div) - 1].parentNode.innerHTML = copia.outerHTML;
+              copia = null;
+            }
+          }
+        }
+
+        let tambor11 = document.querySelectorAll("#t1 > div >i");
+        let tambor21 = document.querySelectorAll("#t2 > div >i");
+        let tambor31 = document.querySelectorAll("#t3 > div >i");
+        let tambor41 = document.querySelectorAll("#t4 > div >i");
+        let tambor51 = document.querySelectorAll("#t5 > div >i");
+
+        let tambores1 = [tambor11, tambor21, tambor31, tambor41, tambor51];
+
+        for (let i = 0; i < tambores.length; i++) {
+          for (let j = 0; j < tambores[i].length; j++) {
+            estadoInicial[j][i] = tambores1[i][j].textContent;
+          }
+        }
+
+        mostrarSolucoes(estadoInicial);
+      }
+
+      for (let i = 1; i <= 5; i++) {
+        dv = document.getElementById("t" + i);
+        dv.addEventListener("click", function () {
+          let ttt = document.querySelectorAll("#t" + i + " > div >i");
+          movimentarPeca(ttt, i);
+        });
+      }
+
+      //MOSTRAR SOLUCOES
+      function mostrarSolucoes(eAtual) {
+        
+       
+        const divSolucoes = document.querySelector("#Solucoes");
+        divSolucoes.innerHTML = "";
+        let arvore = new Arvore(eAtual);
+        let resultado = arvore.buscaPorProfundidade(arvore.raiz);
+
+        if (resultado.length == 0) {
+          divSolucoes.innerHTML = "Solucao muito Longa para ser processada";
+        }
+        for (let i = 0; i < 3; i++) {
+          let dv = document.createElement("div");
+
+if(resultado[i]){
+  
+  for (let j = resultado[i].caminhos.length - 1; j >= 0; j--) {
+            let dv2 = document.createElement("div");
+            dv2.classList.add("letras")
+            for (let k = 0; k < resultado[i].caminhos[j].espaco.length; k++) {
+              for (
+                let l = 0;
+                l < resultado[i].caminhos[j].espaco[k].length;
+                l++
+              ) {
+                let backup = resultado[i].caminhos[j].espaco[k][l];
+
+                if (backup == "") {
+                  dv2.innerHTML += "0&nbsp;&nbsp;";
+                } else {
+                  dv2.innerHTML +=  backup + " &nbsp;&nbsp;";
+                }
+
+                if (l == 4) {
+                  dv2.innerHTML += "<br>";
+                }
+              }
+            }
+            dv2.innerHTML += "<br>======<br>";
+            dv.appendChild(dv2);
+          }
+}
+          let dv3 = document.createElement("div");
+          dv3.innerHTML += "Solucao:<br>";
+  if(resultado[i]){
+    for (let k = 0; k < resultado[i].espaco.length; k++) {
+            for (let l = 0; l < resultado[i].espaco[k].length; l++) {
+              let backup = resultado[i].espaco[k][l];
+
+              if (backup == "") {
+                dv3.innerHTML += "0&nbsp;&nbsp;";
+              } else {
+                dv3.innerHTML +=  backup + "&nbsp;&nbsp;";
+              }
+
+              if (l == 4) {
+                dv3.innerHTML += "<br>";
+              }
+            }
+          }
+  }
+          dv.appendChild(dv3);
+          divSolucoes.appendChild(dv);
+        }
+ 
+      }
+
+
+    </script>
+        <script src="arvore.js"></script>
+  </body>
+</html>
